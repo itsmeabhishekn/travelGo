@@ -6,6 +6,7 @@ const passport = require("passport");
 
 const authRoutes = require("./routes/auth.routes");
 const packageRoutes = require("./routes/package.routes");
+const bookingRoutes = require("./routes/booking.routes");
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(passport.initialize());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/packages", packageRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 // Handle 404 for unmatched routes
 app.use((req, res) => {

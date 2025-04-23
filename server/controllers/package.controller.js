@@ -38,7 +38,22 @@ exports.deletePackage = async (req, res) => {
 
 exports.listPackages = async (req, res) => {
   try {
-    const packages = await TravelPackage.find();
+    const { from, to, startDate, endDate, sortByPrice } = req.query;
+
+    const filter = {};
+    if (from) filter.from = from;
+    if (to) filter.to = to;
+    if (startDate && endDate) {
+      filter.startDate = { $gte: new Date(startDate) };
+      filter.endDate = { $lte: new Date(endDate) };
+    }
+
+    let query = TravelPackage.find(filter);
+    if (sortByPrice) {
+      query = query.sort({ basePrice: sortByPrice === "asc" ? 1 : -1 });
+    }
+
+    const packages = await query.exec();
     res.json(packages);
   } catch (err) {
     res.status(500).json({ error: err.message });
