@@ -5,13 +5,16 @@ const {
   signup,
   login,
   googleAuthSuccess,
+  checkAuth,
+  adminLogin,
 } = require("../controllers/auth.controller");
 
-// Email/Password Auth
-router.post("/signup", signup);
-router.post("/login", login);
+// Email/Password Auth (Signup and Login)
+router.post("/signup", signup); // Signup Endpoint
+router.post("/login", login); // Login Endpoint
+router.post("/admin/login", adminLogin); // Login Endpoint
 
-// Google OAuth
+// Google OAuth Routes
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
@@ -22,5 +25,8 @@ router.get(
   passport.authenticate("google", { session: false }),
   googleAuthSuccess
 );
+
+// Endpoint to check if the user is authenticated (for frontend check)
+router.get("/check-auth", checkAuth);
 
 module.exports = router;
