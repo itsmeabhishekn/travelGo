@@ -10,7 +10,7 @@ const Login = () => {
     const token = await loginWithEmail(email, password);
     if (token) {
       localStorage.setItem("token", token);
-      navigate("/dashboard");
+      navigate("/");
     }
   };
 
@@ -20,7 +20,7 @@ const Login = () => {
       const token = await loginWithGoogle(credential);
       if (token) {
         localStorage.setItem("token", token);
-        navigate("/dashboard");
+        navigate("/");
       }
     } else {
       console.error("Google login failed: No credential received.");

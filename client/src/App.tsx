@@ -1,12 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
-import Home from "./pages/Home";
+import Bookings from "./pages/Bookings";
+import PackageDetails from "./pages/PackageDetails";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminPackages from "./pages/AdminPackages";
 import ProtectedRoute from "./routes/ProtectedRoute";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function App() {
   return (
@@ -26,12 +29,36 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/bookings"
+            element={
+              <ProtectedRoute>
+                <Bookings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/package/:id"
+            element={
+              <ProtectedRoute>
+                <PackageDetails />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route
             path="/admin-dashboard"
             element={
               <ProtectedRoute adminOnly>
                 <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-packages"
+            element={
+              <ProtectedRoute adminOnly>
+                <AdminPackages />
               </ProtectedRoute>
             }
           />
