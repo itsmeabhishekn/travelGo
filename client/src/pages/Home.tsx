@@ -88,9 +88,14 @@ const Home = () => {
     setFilteredPackages(result);
   };
 
+  const resetFilters = () => {
+    setSearchParams({});
+    setFilteredPackages(allPackages); // Reset to the original list
+  };
+
   return (
     <div className="min-h-screen p-8">
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 flex gap-4 items-center">
         <button
           onClick={() => navigate(user ? "/profile" : "/login")}
           className="w-10 h-10 rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -103,6 +108,7 @@ const Home = () => {
           />
         </button>
       </div>
+
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Welcome to TravelGo</h1>
 
@@ -175,13 +181,21 @@ const Home = () => {
               <option value="price-asc">Price: Low to High</option>
               <option value="price-desc">Price: High to Low</option>
             </select>
-            <button
-              onClick={handleSearch}
-              disabled={isLoading}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              {isLoading ? "Searching..." : "Search"}
-            </button>
+            <div className="flex gap-4">
+              <button
+                onClick={handleSearch}
+                disabled={isLoading}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                {isLoading ? "Searching..." : "Search"}
+              </button>
+              <button
+                onClick={resetFilters}
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Reset
+              </button>
+            </div>
           </div>
         </div>
 

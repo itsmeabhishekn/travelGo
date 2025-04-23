@@ -10,7 +10,8 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminPackages from "./pages/AdminPackages";
 import ProtectedRoute from "./routes/ProtectedRoute";
-import ProfilePage from "./pages/Profile"; // Import the new ProfilePage component
+import ProfilePage from "./pages/Profile";
+import AdminAnalytics from "./pages/AdminAnalytics";
 
 function App() {
   return (
@@ -68,6 +69,14 @@ function App() {
             element={
               <ProtectedRoute adminOnly>
                 <AdminPackages />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-analytics"
+            element={
+              <ProtectedRoute adminOnly>
+                <AdminAnalytics />
               </ProtectedRoute>
             }
           />

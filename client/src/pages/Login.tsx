@@ -7,34 +7,32 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = async (email: string, password: string) => {
-    const token = await loginWithEmail(email, password);
-    if (token) {
-      localStorage.setItem("token", token);
-      navigate("/");
+    const res = await loginWithEmail(email, password);
+    if (res?.token) {
+      localStorage.setItem("token", res.token);
+      const role = res.user?.role;
+      navigate(role === "admin" ? "/admin-dashboard" : "/");
     }
   };
 
   const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
     const credential = credentialResponse.credential;
     if (credential) {
-      const token = await loginWithGoogle(credential);
-      if (token) {
-        localStorage.setItem("token", token);
-        navigate("/");
+      const res = await loginWithGoogle(credential);
+      if (res?.token) {
+        localStorage.setItem("token", res.token);
+        navigate(res.user?.role === "admin" ? "/admin-dashboard" : "/");
       }
-    } else {
-      console.error("Google login failed: No credential received.");
     }
   };
 
   return (
-    <>
-      <AuthForm
-        type="login"
-        onSubmit={handleLogin}
-        onGoogleLoginSuccess={handleGoogleLogin}
-      />
-    </>
+    <AuthForm
+      type="login"
+      onSubmit={handleLogin}
+      onGoogleLoginSuccess={handleGoogleLogin}
+      authTitle="Sign in to your account"
+    />
   );
 };
 
