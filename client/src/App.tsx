@@ -7,6 +7,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import AdminPackages from "./pages/AdminPackages";
 
 function App() {
   return (
@@ -32,6 +33,14 @@ function App() {
             element={
               <ProtectedRoute adminOnly>
                 <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-packages"
+            element={
+              <ProtectedRoute adminOnly>
+                <AdminPackages />
               </ProtectedRoute>
             }
           />
