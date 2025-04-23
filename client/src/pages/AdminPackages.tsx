@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import type { ServiceType, TravelPackage } from "../types/booking.types";
 
 import {
@@ -24,6 +25,8 @@ const AdminPackages = () => {
   const [editingPackageId, setEditingPackageId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const navigate = useNavigate(); // Initialize navigate hook
 
   const loadPackages = async () => {
     setIsLoading(true);
@@ -119,6 +122,15 @@ const AdminPackages = () => {
 
   return (
     <div className="p-8 max-w-6xl mx-auto">
+      <div className="mb-4">
+        <button
+          onClick={() => navigate("/admin-dashboard")} // Navigate back to admin dashboard
+          className="text-blue-600 hover:text-blue-800 mb-6"
+        >
+          &lt; Back to Admin Dashboard
+        </button>
+      </div>
+
       <h1 className="text-3xl font-bold mb-6">Manage Travel Packages</h1>
 
       {error && (
@@ -315,15 +327,13 @@ const AdminPackages = () => {
                     <td className="px-6 py-4 whitespace-nowrap space-x-2">
                       <button
                         onClick={() => handleEdit(pkg)}
-                        className="text-yellow-600 hover:text-yellow-900"
-                        disabled={isLoading}
+                        className="text-blue-600 hover:text-blue-800"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(pkg._id)}
-                        className="text-red-600 hover:text-red-900"
-                        disabled={isLoading}
+                        className="text-red-600 hover:text-red-800"
                       >
                         Delete
                       </button>

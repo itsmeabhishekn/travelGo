@@ -1,5 +1,10 @@
+// pages/Signup.tsx
 import { useNavigate } from "react-router-dom";
-import { signupWithEmail, loginWithGoogle } from "../services/auth";
+import {
+  signupWithEmail,
+  loginWithGoogle,
+  AuthResponse,
+} from "../services/auth";
 import AuthForm from "../components/AuthForm";
 import { CredentialResponse } from "@react-oauth/google";
 
@@ -10,20 +15,21 @@ const Signup = () => {
     const token = await signupWithEmail(email, password);
     if (token) {
       localStorage.setItem("token", token);
-      navigate("/dashboard");
+      navigate("/");
     }
   };
 
   const handleGoogleLoginSuccess = async (response: CredentialResponse) => {
     const credential = response.credential;
     if (credential) {
-      const token = await loginWithGoogle(credential);
-      if (token) {
-        localStorage.setItem("token", token);
-        navigate("/dashboard");
+      const reponse: AuthResponse | null = await loginWithGoogle(credential);
+      if (response) {
+        const token = reponse?.token;
+        if (token) {
+          localStorage.setItem("token", token);
+          navigate("/");
+        }
       }
-    } else {
-      console.error("Google login failed: No credential received.");
     }
   };
 
@@ -32,6 +38,7 @@ const Signup = () => {
       type="signup"
       onSubmit={handleSignup}
       onGoogleLoginSuccess={handleGoogleLoginSuccess}
+      authTitle="Create a new account"
     />
   );
 };
