@@ -2,7 +2,17 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SearchParams, TravelPackage, SortBy } from "../types/booking.types";
 import { fetchPackages } from "../services/packageService";
+import { getUserProfile } from "../services/user.service";
 import PackageCard from "../components/PackageCard";
+
+export type User = {
+  avatar?: string;
+  name?: string;
+  email?: string;
+};
+
+const PLACEHOLDER_IMAGE =
+  "https://cdn-icons-png.flaticon.com/512/847/847969.png";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -10,6 +20,7 @@ const Home = () => {
   const [allPackages, setAllPackages] = useState<TravelPackage[]>([]);
   const [filteredPackages, setFilteredPackages] = useState<TravelPackage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const loadPackages = async () => {
@@ -23,7 +34,22 @@ const Home = () => {
         setIsLoading(false);
       }
     };
+
+    const loadUser = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const userData = await getUserProfile();
+          setUser(userData);
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+          setUser(null);
+        }
+      }
+    };
+
     loadPackages();
+    loadUser();
   }, []);
 
   const handleSearch = () => {
@@ -64,6 +90,19 @@ const Home = () => {
 
   return (
     <div className="min-h-screen p-8">
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={() => navigate(user ? "/profile" : "/login")}
+          className="w-10 h-10 rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500"
+          aria-label="Go to profile"
+        >
+          <img
+            src={user?.avatar || PLACEHOLDER_IMAGE}
+            alt="Profile"
+            className="w-full h-full object-cover"
+          />
+        </button>
+      </div>
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Welcome to TravelGo</h1>
 
