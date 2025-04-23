@@ -1,25 +1,185 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { SearchParams, TravelPackage, SortBy } from "../types/booking.types";
+import { fetchPackages } from "../services/packageService";
+import PackageCard from "../components/PackageCard";
 
 const Home = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useState<SearchParams>({});
+  const [allPackages, setAllPackages] = useState<TravelPackage[]>([]);
+  const [filteredPackages, setFilteredPackages] = useState<TravelPackage[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadPackages = async () => {
+      try {
+        const packages = await fetchPackages();
+        setAllPackages(packages);
+        setFilteredPackages(packages);
+      } catch (error) {
+        console.error("Failed to fetch packages:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadPackages();
+  }, []);
+
+  const handleSearch = () => {
+    let result = [...allPackages];
+
+    if (searchParams.from) {
+      result = result.filter((pkg) =>
+        pkg.from.toLowerCase().includes(searchParams.from!.toLowerCase())
+      );
+    }
+
+    if (searchParams.to) {
+      result = result.filter((pkg) =>
+        pkg.to.toLowerCase().includes(searchParams.to!.toLowerCase())
+      );
+    }
+
+    if (searchParams.startDate) {
+      result = result.filter(
+        (pkg) => new Date(pkg.startDate) >= new Date(searchParams.startDate!)
+      );
+    }
+
+    if (searchParams.endDate) {
+      result = result.filter(
+        (pkg) => new Date(pkg.endDate) <= new Date(searchParams.endDate!)
+      );
+    }
+
+    if (searchParams.sortBy === "price-asc") {
+      result.sort((a, b) => a.basePrice - b.basePrice);
+    } else if (searchParams.sortBy === "price-desc") {
+      result.sort((a, b) => b.basePrice - a.basePrice);
+    }
+
+    setFilteredPackages(result);
+  };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8 gap-6">
-      <h1 className="text-3xl font-bold">Welcome to TravelGo</h1>
-      <p className="text-lg">Search and book your next travel package!</p>
-      <div className="flex gap-4">
-        <button
-          onClick={() => navigate("/login")}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Login
-        </button>
-        <button
-          onClick={() => navigate("/signup")}
-          className="bg-green-500 text-white px-4 py-2 rounded"
-        >
-          Signup
-        </button>
+    <div className="min-h-screen p-8">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6">Welcome to TravelGo</h1>
+
+        {/* Search Section */}
+        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+          <h2 className="text-xl font-semibold mb-4">Search Packages</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">From</label>
+              <input
+                type="text"
+                className="w-full border p-2 rounded"
+                value={searchParams.from || ""}
+                onChange={(e) =>
+                  setSearchParams({ ...searchParams, from: e.target.value })
+                }
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">To</label>
+              <input
+                type="text"
+                className="w-full border p-2 rounded"
+                value={searchParams.to || ""}
+                onChange={(e) =>
+                  setSearchParams({ ...searchParams, to: e.target.value })
+                }
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Start Date
+              </label>
+              <input
+                type="date"
+                className="w-full border p-2 rounded"
+                value={searchParams.startDate || ""}
+                onChange={(e) =>
+                  setSearchParams({
+                    ...searchParams,
+                    startDate: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">End Date</label>
+              <input
+                type="date"
+                className="w-full border p-2 rounded"
+                value={searchParams.endDate || ""}
+                onChange={(e) =>
+                  setSearchParams({ ...searchParams, endDate: e.target.value })
+                }
+              />
+            </div>
+          </div>
+          <div className="flex justify-between items-center">
+            <select
+              className="border p-2 rounded"
+              value={searchParams.sortBy || ""}
+              onChange={(e) =>
+                setSearchParams({
+                  ...searchParams,
+                  sortBy: e.target.value as SortBy,
+                })
+              }
+            >
+              <option value="">Sort by</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
+            <button
+              onClick={handleSearch}
+              disabled={isLoading}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              {isLoading ? "Searching..." : "Search"}
+            </button>
+          </div>
+        </div>
+
+        {/* Results Section */}
+        {isLoading ? (
+          <div className="text-center py-8">Loading packages...</div>
+        ) : filteredPackages.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredPackages.map((pkg) => (
+              <PackageCard
+                key={pkg._id}
+                package={pkg}
+                onClick={() => navigate(`/package/${pkg._id}`)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-lg">
+              No packages found. Try adjusting your search criteria.
+            </p>
+            <div className="flex gap-4 justify-center mt-6">
+              <button
+                onClick={() => navigate("/login")}
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => navigate("/signup")}
+                className="bg-green-500 text-white px-4 py-2 rounded"
+              >
+                Signup
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

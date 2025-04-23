@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import type { ServiceType, TravelPackage } from "../types/booking.types";
+
 import {
-  TravelPackage,
   PackageFormData,
   fetchPackages,
   createPackage,
@@ -301,7 +302,7 @@ const AdminPackages = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1">
-                        {pkg.includedServices.map((service) => (
+                        {pkg.includedServices.map((service: ServiceType) => (
                           <span
                             key={service}
                             className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"

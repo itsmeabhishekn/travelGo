@@ -56,6 +56,7 @@ exports.listPackages = async (req, res) => {
     const packages = await query.exec();
     res.json(packages);
   } catch (err) {
+    console.error("Error in listPackages:", err); // Debugging log
     res.status(500).json({ error: err.message });
   }
 };

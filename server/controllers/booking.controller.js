@@ -34,3 +34,13 @@ exports.createBooking = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+exports.getUserBookings = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const bookings = await Booking.find({ userId }).populate("packageId");
+    res.json(bookings);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

@@ -1,16 +1,8 @@
 import axios, { AxiosError } from "axios";
+// At the top of packageService.ts
+import { TravelPackage } from "../types/booking.types";
 
 const API_BASE_URL = "http://localhost:5000/api/packages";
-
-export interface TravelPackage {
-  _id: string;
-  from: string;
-  to: string;
-  startDate: string;
-  endDate: string;
-  basePrice: number;
-  includedServices: string[];
-}
 
 export interface PackageFormData {
   from: string;
@@ -71,6 +63,11 @@ export const deletePackage = async (id: string): Promise<void> => {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
+};
+
+export const fetchPackageById = async (id: string): Promise<TravelPackage> => {
+  const response = await axios.get<TravelPackage>(`${API_BASE_URL}/${id}`);
+  return response.data;
 };
 
 export const handleApiError = (error: unknown): string => {
