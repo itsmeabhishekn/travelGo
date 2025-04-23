@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const app = require("./app");
+const app = require("./app"); // Import the Express app
 
 dotenv.config();
 
@@ -12,6 +12,7 @@ mongoose
   .then(() => {
     console.log("MongoDB connected");
     app.listen(PORT, () => {
+      // Now `app` is correctly imported
       console.log(`Server running on port ${PORT}`);
     });
   })
