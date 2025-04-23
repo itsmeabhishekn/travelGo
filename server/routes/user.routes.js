@@ -5,6 +5,7 @@ const {
   getUserProfile,
   updateUserProfile,
   uploadProfilePicture,
+  uploadProfilePictureMiddleware,
 } = require("../controllers/user.controller");
 const upload = require("../middlewares/upload"); // Importing the multer instance
 
@@ -16,7 +17,7 @@ router.put("/profile", isAuthenticated, updateUserProfile);
 router.post(
   "/profile-picture",
   isAuthenticated,
-  upload.single("profilePicture"), // Applying the .single() middleware
+  uploadProfilePictureMiddleware,
   uploadProfilePicture
 );
 

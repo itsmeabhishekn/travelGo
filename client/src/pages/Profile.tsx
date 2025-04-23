@@ -1,4 +1,4 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState, ChangeEvent, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   getUserProfile,
@@ -13,12 +13,14 @@ const PLACEHOLDER_IMAGE =
 
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [user, setUser] = useState<User | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [filter, setFilter] = useState<
     "All" | "Upcoming" | "Active" | "Completed"
   >("All");
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
   useEffect(() => {
     const loadData = async (): Promise<void> => {
@@ -39,22 +41,15 @@ const ProfilePage = () => {
   const handleProfileUpdate = async (): Promise<void> => {
     if (!user) return;
     try {
-      // Update profile data
       const updatedUser: User = await updateUserProfile({
         name: user.name,
         address: user.address,
       });
       setUser(updatedUser);
-
-      // Fetch the updated user profile again
-      const refreshedUser: User = await getUserProfile();
-      setUser(refreshedUser);
-
-      // Optionally, you can also reload bookings if needed:
-      const fetchedBookings: Booking[] = await fetchBookings();
-      setBookings(fetchedBookings);
+      alert("Profile updated successfully!");
     } catch (err) {
       console.error("Failed to update profile", err);
+      alert("Failed to update profile.");
     }
   };
 
@@ -63,19 +58,29 @@ const ProfilePage = () => {
   ): Promise<void> => {
     const file: File | undefined = e.target.files?.[0];
     if (!file) return;
+
+    setIsUploading(true);
     try {
       const updatedUser: User = await uploadProfilePicture(file);
       setUser(updatedUser);
+      const refreshedUser: User = await getUserProfile();
+      setUser(refreshedUser);
+      alert("Profile picture updated successfully!");
+
+      // Reset the file input after successful upload
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } catch (err) {
       console.error("Failed to upload profile picture", err);
+      alert("Failed to upload profile picture.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
   const handleLogout = (): void => {
-    // Remove token from localStorage
     localStorage.removeItem("token");
-
-    // Redirect to login page
     navigate("/login");
   };
 
@@ -111,7 +116,22 @@ const ProfilePage = () => {
             alt="avatar"
             className="w-20 h-20 rounded-full object-cover"
           />
-          <input type="file" accept="image/*" onChange={handleImageUpload} />
+          <div className="flex flex-col gap-2">
+            <label className="relative cursor-pointer">
+              <span className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors inline-block">
+                {isUploading ? "Uploading..." : "Change Profile Picture"}
+              </span>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                disabled={isUploading}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+            </label>
+            <p className="text-xs text-gray-500">JPG, PNG or GIF (Max 5MB)</p>
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
