@@ -6,19 +6,18 @@ const {
   updateUserProfile,
   uploadProfilePicture,
 } = require("../controllers/user.controller");
-const multer = require("multer");
-
-// multer for file uploads
-const upload = multer({ dest: "uploads/profile-pictures/" });
+const upload = require("../middlewares/upload"); // Importing the multer instance
 
 // Routes
-router.get("/me", isAuthenticated, getUserProfile);
-router.put("/me", isAuthenticated, updateUserProfile);
+router.get("/profile", isAuthenticated, getUserProfile);
+router.put("/profile", isAuthenticated, updateUserProfile);
+
+// Upload profile picture
 router.post(
-  "/me/profile-picture",
+  "/profile-picture",
   isAuthenticated,
-  upload.single("profilePicture"),
+  upload.single("profilePicture"), // Applying the .single() middleware
   uploadProfilePicture
-); // Upload profile picture
+);
 
 module.exports = router;

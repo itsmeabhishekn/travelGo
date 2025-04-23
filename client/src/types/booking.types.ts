@@ -36,3 +36,14 @@ export type SearchParams = {
   endDate?: string;
   sortBy?: SortBy;
 };
+
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  address: string;
+  profilePicture: string | null;
+  role: "user" | "admin";
+  createdAt: string;
+  updatedAt: string;
+}
