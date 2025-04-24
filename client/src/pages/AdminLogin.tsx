@@ -6,9 +6,9 @@ const AdminLogin = () => {
   const navigate = useNavigate();
 
   const handleAdminLogin = async (email: string, password: string) => {
-    const token = await loginAdmin(email, password);
-    if (token) {
-      localStorage.setItem("token", token);
+    const response = await loginAdmin(email, password);
+    if (response?.token) {
+      localStorage.setItem("token", response.token);
       localStorage.setItem("role", "admin");
       navigate("/admin-dashboard");
     }
@@ -16,8 +16,9 @@ const AdminLogin = () => {
 
   return (
     <AuthForm
-      type="login"
+      type="admin-login"
       onSubmit={handleAdminLogin}
+      onGoogleLoginSuccess={() => {}}
       authTitle="Admin Sign In"
     />
   );
