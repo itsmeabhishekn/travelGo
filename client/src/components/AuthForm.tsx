@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import AuthLayout from "./AuthLayout";
-
+import { initiateGoogleLogin } from "../services/auth";
 interface AuthFormProps {
   onSubmit: (email: string, password: string, confirmPassword?: string) => void;
   onGoogleLoginSuccess?: (response: CredentialResponse) => void;
@@ -9,12 +9,7 @@ interface AuthFormProps {
   authTitle: string;
 }
 
-const AuthForm = ({
-  onSubmit,
-  onGoogleLoginSuccess,
-  type,
-  authTitle,
-}: AuthFormProps) => {
+const AuthForm = ({ onSubmit, type, authTitle }: AuthFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -29,8 +24,8 @@ const AuthForm = ({
     onSubmit(email, password, type === "signup" ? confirmPassword : undefined);
   };
 
-  const handleGoogleLogin = (response: CredentialResponse) => {
-    if (onGoogleLoginSuccess) onGoogleLoginSuccess(response);
+  const handleGoogleLogin = () => {
+    initiateGoogleLogin();
   };
 
   return (

@@ -97,13 +97,10 @@ exports.googleAuthSuccess = async (req, res) => {
     // Generate JWT Token
     const token = createToken(user._id);
 
-    // Send response with token and user data
-    res.json({
-      token,
-      user: { id: user._id, email: user.email, role: user.role },
-    });
+    // Redirect to the frontend with the token
+    res.redirect(`${process.env.CLIENT_URL}/login?token=${token}`);
   } catch (err) {
-    console.error(err); // Log the error for debugging
+    console.error(err);
     res.status(500).json({ error: "Server error during Google OAuth" });
   }
 };

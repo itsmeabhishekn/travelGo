@@ -56,6 +56,10 @@ export const loginWithGoogle = async (
   }
 };
 
+export const initiateGoogleLogin = () => {
+  window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
+};
+
 export const loginAdmin = async (
   email: string,
   password: string
