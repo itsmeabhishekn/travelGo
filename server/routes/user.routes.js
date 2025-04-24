@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { isAuthenticated } = require("../middlewares/auth");
+const { isAuthenticated, isUser } = require("../middlewares/auth");
 const {
   getUserProfile,
   updateUserProfile,
@@ -10,13 +10,14 @@ const {
 const upload = require("../middlewares/upload"); // Importing the multer instance
 
 // Routes
-router.get("/profile", isAuthenticated, getUserProfile);
-router.put("/profile", isAuthenticated, updateUserProfile);
+router.get("/profile", isAuthenticated, isUser, getUserProfile);
+router.put("/profile", isAuthenticated, isUser, updateUserProfile);
 
 // Upload profile picture
 router.post(
   "/profile-picture",
   isAuthenticated,
+  isUser,
   uploadProfilePictureMiddleware,
   uploadProfilePicture
 );

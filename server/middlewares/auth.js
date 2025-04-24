@@ -7,9 +7,10 @@ exports.isAuthenticated = async (req, res, next) => {
     if (!token) throw new Error("Unauthorized");
 
     const decoded = verifyToken(token);
-    req.user = await User.findById(decoded.id);
-    if (!req.user) throw new Error("Unauthorized");
+    const user = await User.findById(decoded.id);
+    if (!user) throw new Error("Unauthorized");
 
+    req.user = user;
     next();
   } catch (err) {
     res.status(401).json({ error: err.message });
@@ -19,9 +20,30 @@ exports.isAuthenticated = async (req, res, next) => {
 exports.isAdmin = async (req, res, next) => {
   try {
     await exports.isAuthenticated(req, res, () => {});
-    if (req.user.role !== "admin") throw new Error("Forbidden");
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        error: "Forbidden",
+        redirect: "/", // Redirect user to their dashboard
+      });
+    }
     next();
   } catch (err) {
+    res.status(403).json({ error: err.message });
+  }
+};
+
+exports.isUser = async (req, res, next) => {
+  try {
+    await exports.isAuthenticated(req, res, () => {});
+    if (req.user.role !== "user") {
+      return res.status(403).json({
+        error: "Forbidden",
+        redirect: "/admin-dashboard", // Redirect admin to their dashboard
+      });
+    }
+    next();
+  } catch (err) {
+    console.error(err.message);
     res.status(403).json({ error: err.message });
   }
 };

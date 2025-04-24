@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { isAdmin } = require("../middlewares/auth");
+const { isAuthenticated, isAdmin } = require("../middlewares/auth");
 const {
   createPackage,
   updatePackage,
@@ -10,9 +10,9 @@ const {
 } = require("../controllers/package.controller");
 
 // Admin-only routes
-router.post("/", isAdmin, createPackage);
-router.put("/:id", isAdmin, updatePackage);
-router.delete("/:id", isAdmin, deletePackage);
+router.post("/", isAuthenticated, isAdmin, createPackage);
+router.put("/:id", isAuthenticated, isAdmin, updatePackage);
+router.delete("/:id", isAuthenticated, isAdmin, deletePackage);
 
 // Public routes
 router.get("/", listPackages);

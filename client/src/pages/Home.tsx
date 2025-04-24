@@ -9,6 +9,7 @@ export type User = {
   avatar?: string;
   name?: string;
   email?: string;
+  profilePicture?: string;
 };
 
 const PLACEHOLDER_IMAGE =
@@ -102,7 +103,7 @@ const Home = () => {
           aria-label="Go to profile"
         >
           <img
-            src={user?.avatar || PLACEHOLDER_IMAGE}
+            src={user?.profilePicture || user?.avatar || PLACEHOLDER_IMAGE}
             alt="Profile"
             className="w-full h-full object-cover"
           />
