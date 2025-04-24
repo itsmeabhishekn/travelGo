@@ -10,7 +10,9 @@ exports.getUsersAndBookings = async (req, res) => {
 
     const result = users.map((user) => {
       const userBookings = bookings.filter(
-        (booking) => booking.userId._id.toString() === user._id.toString()
+        (booking) =>
+          booking.userId &&
+          booking.userId._id.toString() === user._id.toString()
       );
       return { user, bookings: userBookings };
     });
