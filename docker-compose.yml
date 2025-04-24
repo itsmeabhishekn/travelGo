@@ -1,0 +1,42 @@
+version: "3.8"
+services:
+  server:
+    build:
+      context: ./server
+    container_name: travelgo-server
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./server/.env
+    depends_on:
+      - mongo
+    networks:
+      - travelgo-network
+
+  client:
+    build:
+      context: ./client
+    container_name: travelgo-client
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    networks:
+      - travelgo-network
+
+  mongo:
+    image: mongo:6
+    container_name: travelgo-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - travelgo-network
+
+volumes:
+  mongo-data:
+
+networks:
+  travelgo-network:
+    driver: bridge

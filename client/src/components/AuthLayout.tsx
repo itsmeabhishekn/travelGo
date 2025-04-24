@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface AuthLayoutProps {
   title: string;
@@ -18,6 +18,10 @@ const AuthLayout = ({
   footerLinkText,
   showAdminLink = true,
 }: AuthLayoutProps) => {
+  const location = useLocation();
+
+  const isAdminLoginRoute = location.pathname === "/admin-login";
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -40,7 +44,7 @@ const AuthLayout = ({
             </Link>
           </div>
 
-          {showAdminLink && (
+          {showAdminLink && !isAdminLoginRoute && (
             <div className="mt-4 text-center text-sm">
               <span className="text-gray-600">Admin? </span>
               <Link

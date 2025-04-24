@@ -1,36 +1,42 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { loginWithEmail, loginWithGoogle } from "../services/auth";
 import AuthForm from "../components/AuthForm";
-import { CredentialResponse } from "@react-oauth/google";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleLogin = async (email: string, password: string) => {
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
+    if (token) {
+      localStorage.setItem("token", token);
+      navigate("/");
+    }
+  }, [location, navigate]);
+
+  const handleEmailLogin = async (email: string, password: string) => {
     const res = await loginWithEmail(email, password);
     if (res?.token) {
       localStorage.setItem("token", res.token);
-      const role = res.user?.role;
-      navigate(role === "admin" ? "/admin-dashboard" : "/");
+      navigate(res.user.role === "admin" ? "/admin-dashboard" : "/");
     }
   };
 
-  const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
-    const credential = credentialResponse.credential;
-    if (credential) {
-      const res = await loginWithGoogle(credential);
-      if (res?.token) {
-        localStorage.setItem("token", res.token);
-        navigate(res.user?.role === "admin" ? "/admin-dashboard" : "/");
-      }
+  const handleGoogleCredential = async (credential: string) => {
+    const res = await loginWithGoogle(credential);
+    if (res?.token) {
+      localStorage.setItem("token", res.token);
+      navigate(res.user.role === "admin" ? "/admin-dashboard" : "/");
     }
   };
 
   return (
     <AuthForm
       type="login"
-      onSubmit={handleLogin}
-      onGoogleLoginSuccess={handleGoogleLogin}
+      onSubmit={handleEmailLogin}
+      onGoogleLoginSuccess={handleGoogleCredential}
       authTitle="Sign in to your account"
     />
   );
