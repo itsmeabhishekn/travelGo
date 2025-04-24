@@ -188,6 +188,8 @@ const AdminPackages = () => {
               onChange={handleInputChange}
               className="w-full border p-2 rounded"
               required
+              min={new Date().toISOString().split("T")[0]}
+              max={formData.endDate || undefined}
             />
           </div>
           <div>
@@ -201,6 +203,7 @@ const AdminPackages = () => {
               onChange={handleInputChange}
               className="w-full border p-2 rounded"
               required
+              min={formData.startDate || new Date().toISOString().split("T")[0]}
             />
           </div>
           <div>
