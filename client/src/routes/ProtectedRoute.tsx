@@ -8,7 +8,7 @@ const ProtectedRoute = ({
   adminOnly?: boolean;
 }) => {
   const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role"); // Retrieve the role from localStorage
   const location = useLocation();
 
   if (!token) {
@@ -16,10 +16,14 @@ const ProtectedRoute = ({
   }
 
   if (adminOnly && role !== "admin") {
-    return <Navigate to="/admin-login" state={{ from: location }} replace />;
+    return <Navigate to="/" replace />;
   }
 
-  return children;
+  if (!adminOnly && role === "admin") {
+    return <Navigate to="/admin-dashboard" replace />;
+  }
+
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

@@ -4,9 +4,9 @@ const {
   createBooking,
   getUserBookings,
 } = require("../controllers/booking.controller");
-const { isAuthenticated } = require("../middlewares/auth");
+const { isAuthenticated, isUser } = require("../middlewares/auth");
 
-router.post("/", isAuthenticated, createBooking);
-router.get("/", isAuthenticated, getUserBookings);
+router.post("/", isAuthenticated, isUser, createBooking);
+router.get("/", isAuthenticated, isUser, getUserBookings);
 
 module.exports = router;

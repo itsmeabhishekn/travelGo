@@ -14,6 +14,7 @@ const Signup = () => {
     const response = await signupWithEmail(email, password);
     if (response?.token) {
       localStorage.setItem("token", response.token);
+      localStorage.setItem("role", response.user.role);
       navigate("/");
     }
   };

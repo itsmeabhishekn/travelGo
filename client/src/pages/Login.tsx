@@ -21,6 +21,7 @@ const Login = () => {
     const res = await loginWithEmail(email, password);
     if (res?.token) {
       localStorage.setItem("token", res.token);
+      localStorage.setItem("role", res.user.role);
       navigate(res.user.role === "admin" ? "/admin-dashboard" : "/");
     }
   };
@@ -31,6 +32,7 @@ const Login = () => {
       const res = await loginWithGoogle(credential);
       if (res?.token) {
         localStorage.setItem("token", res.token);
+        localStorage.setItem("role", res.user.role);
         navigate(res.user.role === "admin" ? "/admin-dashboard" : "/");
       }
     } else {
