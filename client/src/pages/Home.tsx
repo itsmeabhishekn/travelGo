@@ -166,9 +166,9 @@ const Home = () => {
               />
             </div>
           </div>
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             <select
-              className="border p-2 rounded"
+              className="border p-2 rounded w-full md:w-auto"
               value={searchParams.sortBy || ""}
               onChange={(e) =>
                 setSearchParams({
@@ -181,17 +181,17 @@ const Home = () => {
               <option value="price-asc">Price: Low to High</option>
               <option value="price-desc">Price: High to Low</option>
             </select>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
               <button
                 onClick={handleSearch}
                 disabled={isLoading}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full sm:w-auto"
               >
                 {isLoading ? "Searching..." : "Search"}
               </button>
               <button
                 onClick={resetFilters}
-                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 w-full sm:w-auto"
               >
                 Reset
               </button>
