@@ -1,7 +1,9 @@
 import axios, { AxiosError } from "axios";
 import { ServiceType, Booking } from "../types/booking.types";
 
-const BOOKINGS_API_URL = "http://localhost:5000/api/bookings";
+const BOOKINGS_API_URL = import.meta.env.VITE_API_BASE_URL
+  ? `${import.meta.env.VITE_API_BASE_URL}/bookings`
+  : "/bookings";
 
 export const bookPackage = async (params: {
   packageId: string;

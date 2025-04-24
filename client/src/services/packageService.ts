@@ -2,7 +2,9 @@ import axios, { AxiosError } from "axios";
 // At the top of packageService.ts
 import { TravelPackage } from "../types/booking.types";
 
-const API_BASE_URL = "http://localhost:5000/api/packages";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+  ? `${import.meta.env.VITE_API_BASE_URL}/packages`
+  : "/packages";
 
 export interface PackageFormData {
   from: string;
