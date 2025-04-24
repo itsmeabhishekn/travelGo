@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { TravelPackage, ServiceType } from "../types/booking.types";
 import { fetchPackageById } from "../services/packageService";
 import { bookPackage } from "../services/booking.service";
+import { motion } from "framer-motion";
 
 const PackageDetails = () => {
   const { id } = useParams();
@@ -26,7 +27,6 @@ const PackageDetails = () => {
         setIsLoading(false);
       }
     };
-
     loadPackage();
   }, [id]);
 
@@ -38,20 +38,9 @@ const PackageDetails = () => {
     );
   };
 
-  // Adjusting total price calculation to reflect selected services
   const calculateTotalPrice = () => {
     if (!pkg) return 0;
-
-    // Start with the base price
-    let totalPrice = pkg.basePrice;
-
-    // Add 500 for each selected service
-    const serviceCost = 500;
-    selectedServices.forEach(() => {
-      totalPrice += serviceCost;
-    });
-
-    return totalPrice;
+    return pkg.basePrice + selectedServices.length * 500;
   };
 
   const handleBook = async () => {
@@ -72,42 +61,58 @@ const PackageDetails = () => {
   };
 
   if (isLoading)
-    return <div className="text-center py-8">Loading package details...</div>;
-  if (!pkg) return <div className="text-center py-8">Package not found</div>;
+    return (
+      <div className="text-center py-20 text-lg">
+        Loading package details...
+      </div>
+    );
+  if (!pkg)
+    return <div className="text-center py-20 text-lg">Package not found</div>;
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
+    <motion.div
+      className="min-h-screen p-6 bg-gray-100"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <div className="max-w-5xl mx-auto">
         <button
           onClick={() => navigate(-1)}
-          className="mb-4 text-blue-500 hover:underline"
+          className="text-blue-600 hover:underline mb-6"
         >
           ← Back to search
         </button>
 
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <motion.div
+          className="bg-white shadow-xl rounded-2xl overflow-hidden"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
           {pkg.imageUrl && (
             <img
               src={pkg.imageUrl}
               alt={`${pkg.from} to ${pkg.to}`}
-              className="w-full h-64 object-cover"
+              className="w-full h-[320px] object-cover"
             />
           )}
 
-          <div className="p-6">
-            <h1 className="text-2xl font-bold mb-2">
-              {pkg.from} → {pkg.to}
-            </h1>
-            <p className="text-gray-600 mb-4">
-              {new Date(pkg.startDate).toLocaleDateString()} -{" "}
-              {new Date(pkg.endDate).toLocaleDateString()}
-            </p>
+          <div className="p-8 space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold">
+                {pkg.from} → {pkg.to}
+              </h1>
+              <p className="text-gray-600 text-sm mt-1">
+                {new Date(pkg.startDate).toLocaleDateString()} -{" "}
+                {new Date(pkg.endDate).toLocaleDateString()}
+              </p>
+            </div>
 
-            <p className="mb-6">{pkg.description}</p>
+            <p className="text-gray-800 text-md">{pkg.description}</p>
 
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-3">Included Services</h2>
-              <div className="space-y-2">
+            <div>
+              <h2 className="text-xl font-semibold mb-3">Customize Services</h2>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                 {(
                   [
                     "Food",
@@ -116,40 +121,42 @@ const PackageDetails = () => {
                     "Guided Tours",
                   ] as ServiceType[]
                 ).map((service) => (
-                  <label key={service} className="flex items-center space-x-2">
+                  <label
+                    key={service}
+                    className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-lg p-3 cursor-pointer transition"
+                  >
                     <input
                       type="checkbox"
                       checked={selectedServices.includes(service)}
                       onChange={() => toggleService(service)}
-                      className="h-4 w-4 text-blue-600 rounded"
+                      className="accent-blue-600"
                     />
-                    <span>{service}</span>
+                    <span className="text-gray-700">{service}</span>
                   </label>
                 ))}
               </div>
             </div>
 
-            <div className="border-t pt-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-lg">Total Price:</p>
-                  <p className="text-2xl font-bold">
-                    ${calculateTotalPrice().toFixed(2)}
-                  </p>
-                </div>
-                <button
-                  onClick={handleBook}
-                  disabled={isBooking}
-                  className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 disabled:bg-green-300"
-                >
-                  {isBooking ? "Booking..." : "Book Now"}
-                </button>
+            <div className="pt-4 border-t flex justify-between items-center">
+              <div>
+                <p className="text-lg font-medium text-gray-800">Total Price</p>
+                <p className="text-2xl font-bold text-green-600">
+                  ${calculateTotalPrice().toFixed(2)}
+                </p>
               </div>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={handleBook}
+                disabled={isBooking}
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl disabled:opacity-50"
+              >
+                {isBooking ? "Booking..." : "Book Now"}
+              </motion.button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
