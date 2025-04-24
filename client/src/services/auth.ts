@@ -26,7 +26,7 @@ export const loginWithEmail = async (
     const res = await axios.post(`${API_BASE}/login`, { email, password });
     return res.data;
   } catch (err) {
-    console.error(err);
+    console.error("Email login failed", err);
     return null;
   }
 };
@@ -34,12 +34,12 @@ export const loginWithEmail = async (
 export const signupWithEmail = async (
   email: string,
   password: string
-): Promise<string | null> => {
+): Promise<AuthResponse | null> => {
   try {
     const res = await axios.post(`${API_BASE}/signup`, { email, password });
-    return res.data.token;
+    return res.data;
   } catch (err) {
-    console.error(err);
+    console.error("Signup failed", err);
     return null;
   }
 };
@@ -51,27 +51,23 @@ export const loginWithGoogle = async (
     const res = await axios.post(`${API_BASE}/google`, { credential });
     return res.data;
   } catch (err) {
-    console.error(err);
+    console.error("Google login failed", err);
     return null;
   }
-};
-
-export const initiateGoogleLogin = () => {
-  window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
 };
 
 export const loginAdmin = async (
   email: string,
   password: string
-): Promise<string | null> => {
+): Promise<AuthResponse | null> => {
   try {
     const res = await axios.post(`${API_BASE}/admin/login`, {
       email,
       password,
     });
-    return res.data.token;
+    return res.data;
   } catch (err) {
-    console.error(err);
+    console.error("Admin login failed", err);
     return null;
   }
 };
