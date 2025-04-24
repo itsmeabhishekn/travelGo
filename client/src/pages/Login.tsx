@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { loginWithEmail, loginWithGoogle } from "../services/auth";
 import AuthForm from "../components/AuthForm";
+import { CredentialResponse } from "@react-oauth/google";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -24,11 +25,16 @@ const Login = () => {
     }
   };
 
-  const handleGoogleCredential = async (credential: string) => {
-    const res = await loginWithGoogle(credential);
-    if (res?.token) {
-      localStorage.setItem("token", res.token);
-      navigate(res.user.role === "admin" ? "/admin-dashboard" : "/");
+  const handleGoogleCredential = async (response: CredentialResponse) => {
+    const credential = response.credential;
+    if (credential) {
+      const res = await loginWithGoogle(credential);
+      if (res?.token) {
+        localStorage.setItem("token", res.token);
+        navigate(res.user.role === "admin" ? "/admin-dashboard" : "/");
+      }
+    } else {
+      console.error("No Google credential found");
     }
   };
 

@@ -1,4 +1,3 @@
-// pages/Signup.tsx
 import { useNavigate } from "react-router-dom";
 import {
   signupWithEmail,
@@ -12,9 +11,9 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const handleSignup = async (email: string, password: string) => {
-    const token = await signupWithEmail(email, password);
-    if (token) {
-      localStorage.setItem("token", token);
+    const response = await signupWithEmail(email, password);
+    if (response?.token) {
+      localStorage.setItem("token", response.token);
       navigate("/");
     }
   };
@@ -22,13 +21,12 @@ const Signup = () => {
   const handleGoogleLoginSuccess = async (response: CredentialResponse) => {
     const credential = response.credential;
     if (credential) {
-      const reponse: AuthResponse | null = await loginWithGoogle(credential);
-      if (response) {
-        const token = reponse?.token;
-        if (token) {
-          localStorage.setItem("token", token);
-          navigate("/");
-        }
+      const authResponse: AuthResponse | null = await loginWithGoogle(
+        credential
+      );
+      if (authResponse?.token) {
+        localStorage.setItem("token", authResponse.token);
+        navigate("/");
       }
     }
   };
